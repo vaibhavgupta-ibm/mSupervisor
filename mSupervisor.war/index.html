@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>mSupervisor - Capture Workplace Photo</title>
+<meta charset="utf-8" />
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+
+<!--
+<link rel="stylesheet" href="jquery.mobile-1.4.5.min.css" />
+<script src="jquery-1.11.1.min.js"></script>
+<script src="jquery.mobile-1.4.5.min.js"></script>
+-->
+
+<script>
+
+function pad2(n) { return n < 10 ? '0' + n : n }
+
+	function setDateTimeStamp()
+	{
+		var date = new Date();
+
+		var datetimestamp =  date.getFullYear().toString() + pad2(date.getMonth() + 1) + 
+															 pad2( date.getDate()) + 
+															 pad2( date.getHours() ) + 
+															 pad2(date.getMinutes() ) + 
+															 pad2( date.getSeconds() );
+		//alert(datetimestamp);
+		$("#id_datetime_label").text(datetimestamp);
+		$("#id_datetime").val(datetimestamp);
+		return true;
+		
+	}
+
+	function getLocation() {	
+		
+		setDateTimeStamp();
+	
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(showPosition);
+		} else { 
+			$("#id_loc_label").html("Geolocation is not supported by this browser.");
+		}
+		return true;
+	}
+
+	function showPosition(position) {
+		//alert(position.coords.latitude+","+ position.coords.longitude);
+		$("#id_metadata").show();
+		$("#id_loc_label").text("lat "+position.coords.latitude+", long "+ position.coords.longitude);
+		$("#id_loc").val(position.coords.latitude+","+ position.coords.longitude);
+		
+	}
+	
+	function validateForm()
+	{
+		var isFormValid = true ;
+		var errormessage = "Please provide following mandatory data : " ;
+		
+		var nm = $("#id_name").val() ;
+		if (nm == null || nm == "")
+		{
+			isFormValid = false ;
+			errormessage += "[Name] "; 
+		}
+		
+		var id_ = $("#id_id").val() ;
+		if (id_ == null || id_ == "")
+		{
+			isFormValid = false ;
+			errormessage += "[Identity] "; 
+		}
+		
+		var ph = $("#file-input").val() ;
+
+		if (ph == null || ph == "")
+		{
+			isFormValid = false ;
+			errormessage += "[Photo] "; 
+		}
+		
+		if(isFormValid==false)
+		{
+			alert(errormessage);
+			return false;
+		}
+	
+		
+	}
+
+	
+</script>
+
+</head>
+
+<body>
+<div data-role="page" id="home" data-theme="a">
+	<div data-role="header">
+	<h1>mSupervisor</h1>
+	</div>
+	
+	<div data-role="main" class="ui-content">
+
+		<form action="uploadFileProcessor.jsp" method="post" enctype="multipart/form-data" data-ajax="false" onsubmit="return validateForm()" >
+		  <div data-role="fieldcontain">
+		  <label>Name</label>
+		  <input type="text" id="id_name" name="name" value="" placeholder="employee  or  ngo  or  volunteer" required="required"/>
+		  </div>
+		  
+		  <div data-role="fieldcontain">
+		  <label>Identity</label> 
+		  <input type="text" id="id_id" name="id" value="" placeholder="employee id  or  ngo id  or  volunteer id" required="required"/>
+		  </div>
+		  
+		  <div data-role="fieldcontain">
+		  <label>Site</label> 
+		  <select name="site" id="id_site" data-native-menu="false">
+			  <option value="Bus Stop">Bus Stop</option>
+			  <option value="Footpath">Footpath</option>
+			  <option value="Public Toilet" selected>Public Toilet</option>
+			  <option value="Railway Platform">Railway Platform</option>			  
+			</select>
+		  </div>
+		  
+		  
+		  <div data-role="fieldcontain">
+		  <label>Status</label> 
+		  <fieldset data-role="controlgroup" data-type="vertical">
+		   <input type="radio" name="status" id="stat-a" value="Not Started" checked="checked">
+				<label for="stat-a">Not Started</label>
+		   <input type="radio" name="status" id="stat-b" value="In Progress">
+				<label for="stat-b">In Progress</label>
+		    <input type="radio" name="status" id="stat-c" value="Completed">
+		        <label for="stat-c">Completed</label>
+		   </fieldset>
+		  </div>
+		  
+		 <!--		  
+		  <div data-role="fieldcontain">
+		  <label for="flip-1">Completed</label>
+		  <select name="flip-1" id="flip-1" data-role="slider">
+		  <option value="no">No</option>
+		  <option value="yes">Yes</option>
+		  </select>
+		  </div>
+		  -->
+			 
+		  <div data-role="fieldcontain">
+		  <label>Photo</label>		  
+		  <input id="file-input" type="file" name="image" accept="image/*" capture="camera" onchange="getLocation()"  required="required"/>
+		  </div>
+		  
+		  <div data-role="fieldcontain">
+		  <label>Comments</label> 
+		  <textarea style="height:100px;" id="id_comment" name="comment" placeholder="enter description. In case staus not completed ,provide comments" ></textarea>
+		  </div>	
+		  
+		  <div data-role="fieldcontain" id="id_metadata" style="display:none;">		  
+		  <label><h5><i>Location</i><div id="id_loc_label" name="loc_label" value="NOT AVAILABLE"/>NOT AVAILABLE</h5></label> 		  
+		  <input type="hidden" id="id_loc" name="loc"/>		  
+		  <label><h5><i>Date time stamp</i> <div id="id_datetime_label" name="datetime_label"/></h5></label> 
+		  <input type="hidden" id="id_datetime" name="datetime"/>
+		  </div>
+		  
+		  <div data-role="fieldcontain">
+		  <input type="submit" value = "Send"/>
+		  </div>
+		  
+		  
+		</form>
+	</div>
+	
+	<div data-role="footer">
+	<h2>&copy; TECHATHON 2014</h2>
+	</div>
+	
+</div>
+</body>
+</html> 

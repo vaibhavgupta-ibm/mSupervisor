@@ -1,0 +1,41 @@
+
+
+<web-app>  
+   
+   <servlet>
+    <description></description>
+    <display-name>HelloVaibhav</display-name>
+    <servlet-name>HelloVaibhav</servlet-name>
+    <servlet-class>com.vg.test.Hello</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HelloVaibhav</servlet-name>
+    <url-pattern>/HelloVaibhav</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>TestDB2App</display-name>
+    <servlet-name>TestDB2App</servlet-name>
+    <servlet-class>com.vg.test.TestDB2App</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TestDB2App</servlet-name>
+    <url-pattern>/TestDB2App</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>testImgApp</servlet-name>
+    <servlet-class>com.test.DisplayImage</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>testImgApp</servlet-name>
+    <url-pattern>/testImgApp</url-pattern>
+  </servlet-mapping>
+  
+  <welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+  </welcome-file-list> 
+    
+
+</web-app>
+
